@@ -18,7 +18,7 @@ module Model
 
   Grid = Struct.new(:rows, :cols)
 
-  State = Struct.new(:snake, :food, :grid, :next_direction)
+  State = Struct.new(:snake, :food, :grid, :next_directionm, :game_finished)
 
   def self.init_state
     Model::State.new(
@@ -28,7 +28,8 @@ module Model
                        ]),
       Model::Food.new(4, 4),
       Model::Grid.new(8, 12),
-      Direction::DOWN
+      Direction::DOWN,
+      false
     )
   end
 end
