@@ -11,16 +11,24 @@ class App
   end
 
   def start
-    view = View::Ruby2dView.new
-    Thread.new { init_timer(view) }
-    view.start(@estado)
+    @view = View::Ruby2dView.new(self)
+    Thread.new { init_timer(@view) }
+    @view.start(@estado)
   end
 
-  def init_timer(view)
+  def init_timer(_view)
     loop do
       @estado = Controllers.move_snake(@estado)
-      view.render_game(@estado)
+      @view.render_game(@estado)
       sleep 0.5
+    end
+  end
+
+  def send_action(action, params)
+    new_estado = Controllers.send(action, @estado, params)
+    if new_estado.hash != @estado
+      @estado = new_estado
+      @view.render_game(@estado)
     end
   end
 end
