@@ -8,6 +8,7 @@ require_relative 'controllers/controllers'
 class App
   def initialize
     @estado = Model.init_state
+    @speed = 0.5
   end
 
   def start
@@ -18,6 +19,7 @@ class App
   end
 
   def init_timer(_view)
+    snake_length = @estado.snake.positions.length
     loop do
       if @estado.game_finished
         puts 'Game Over!'
@@ -26,7 +28,12 @@ class App
       end
       @estado = Controllers.move_snake(@estado)
       @view.render_game(@estado)
-      sleep 0.5
+      if snake_length < @estado.snake.positions.length
+        snake_length = @estado.snake.positions.length
+        calculate_speed_increment
+        puts "Velocidad actual: #{@speed}"
+      end
+      sleep @speed
     end
   end
 
@@ -35,6 +42,13 @@ class App
     if new_estado.hash != @estado
       @estado = new_estado
       @view.render_game(@estado)
+    end
+  end
+
+  def calculate_speed_increment
+    if @speed > 0.001
+      @speed -= (@speed * 0.05)
+      @speed = 0.001 if @speed < 0.001
     end
   end
 end
