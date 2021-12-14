@@ -4,8 +4,9 @@ require 'ruby2d'
 module View
   # Clase que contiene los metodos para poder rendelizar el juego en pantalla
   class Ruby2dView
-    def initialize
+    def initialize(app)
       @pixel_size = 50
+      @app = app
     end
 
     def start(state)
@@ -15,6 +16,10 @@ module View
         width: @pixel_size * state.grid.cols,
         heigth: @pixel_size * state.grid.rows
       )
+      on :key_down do |event|
+        # A key was pressed
+        handle_key_event(event)
+      end
       show
     end
 
@@ -62,6 +67,23 @@ module View
           size: @pixel_size,
           color: 'green'
         )
+      end
+    end
+
+    def handle_key_event(event)
+      case event.key
+      when 'up'
+        # cambiar direccion hacia arriba
+        @app.send_action(:change_direction, Model::Direction::UP)
+      when 'down'
+        # cambiar direccion hacia abajo
+        @app.send_action(:change_direction, Model::Direction::DOWN)
+      when 'left'
+        # cambiar direccion hacia izquierda
+        @app.send_action(:change_direction, Model::Direction::LEFT)
+      when 'right'
+        # cambia direccion hacia derecha
+        @app.send_action(:change_direction, Model::Direction::RIGHT)
       end
     end
   end
